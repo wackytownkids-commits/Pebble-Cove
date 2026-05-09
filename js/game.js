@@ -49,6 +49,8 @@ const Game = {
     Input.init();
     Touch.init();
 
+    if (typeof Camera !== 'undefined') Camera.init();
+
     Game.running = true;
     Game.lastT = performance.now();
     requestAnimationFrame(Game.tick);
@@ -124,19 +126,28 @@ const Game = {
 
   draw(t) {
     const hour = Game.currentHour();
+    // Sky drawn in screen space (no camera transform)
     World.drawSky(ctx, hour);
+    // World content drawn through camera
+    ctx.save();
+    if (typeof Camera !== 'undefined') {
+      Camera.update(1/60);
+      Camera.apply(ctx);
+    }
     World.drawTerrain(ctx);
     World.drawDecor(ctx, t);
     World.drawBuildings(ctx, t);
     World.drawTrees(ctx, t);
     Residents.draw(ctx, t);
     Sprites.drawChibi(ctx, gameState.player.x, gameState.player.y, gameState.player.look, t, gameState.player.walking);
-    World.drawNightOverlay(ctx, hour);
-    Game.drawWeather(t);
     if (Editor.active) {
       Editor.drawBarrier(ctx);
       Editor.drawHover(ctx);
     }
+    ctx.restore();
+    // Night overlay & weather in screen space
+    World.drawNightOverlay(ctx, hour);
+    Game.drawWeather(t);
     if (UI.drawSparks) UI.drawSparks(ctx, 1/60);
     Touch.drawJoystick(ctx);
   },
@@ -250,7 +261,7 @@ const Game = {
     }
   },
 
-  async newGame(name) {
+  async newGame(name, look) {
     try {
       Save.wipe();
       gameState.playerName = name || 'Keeper';
@@ -259,9 +270,11 @@ const Game = {
       gameState.seasonIndex = 0;
       gameState.timeOfDay = 6/24;
       gameState.inventory = { polished_pebble: 2, herbs: 1 };
+      if (look) gameState.player.look = Object.assign(gameState.player.look, look);
 
       showScreen('game-screen');
       Game.start();
+      if (gameState._emptyMode && typeof EmptyWorld !== 'undefined') EmptyWorld.apply();
       if (typeof Story !== 'undefined' && Story.active) Story.start();
     } catch (err) {
       console.error('newGame failed:', err);
@@ -280,11 +293,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function onClickNew() {
     if (typeof Story !== 'undefined') Story.active = false;
-    showScreen('name-screen');
-    setTimeout(() => document.getElementById('name-input').focus(), 100);
+    gameState._emptyMode = false;
+    if (typeof CharCreator !== 'undefined') { CharCreator.init(); CharCreator.open(); }
+    else { showScreen('name-screen'); setTimeout(() => document.getElementById('name-input').focus(), 100); }
   }
   document.getElementById('btn-new').addEventListener('click', onClickNew);
   document.getElementById('btn-new').addEventListener('touchend', e => { e.preventDefault(); onClickNew(); }, { passive: false });
+  function onClickEmpty() {
+    if (typeof Story !== 'undefined') Story.active = false;
+    gameState._emptyMode = true;
+    if (typeof CharCreator !== 'undefined') { CharCreator.init(); CharCreator.open(); }
+    else { showScreen('name-screen'); setTimeout(() => document.getElementById('name-input').focus(), 100); }
+  }
+  const emptyBtn = document.getElementById('btn-empty');
+  if (emptyBtn) {
+    emptyBtn.addEventListener('click', onClickEmpty);
+    emptyBtn.addEventListener('touchend', e => { e.preventDefault(); onClickEmpty(); }, { passive: false });
+  }
+  function onClickCCGo() {
+    const out = CharCreator.finalize();
+    Game.newGame(out.name, out.look);
+  }
+  const ccGo = document.getElementById('cc-go');
+  if (ccGo) {
+    ccGo.addEventListener('click', onClickCCGo);
+    ccGo.addEventListener('touchend', e => { e.preventDefault(); onClickCCGo(); }, { passive: false });
+  }
+  const ccRand = document.getElementById('cc-random');
+  if (ccRand) ccRand.addEventListener('click', () => CharCreator.randomize());
   const storyBtn = document.getElementById('btn-story');
   if (storyBtn) storyBtn.addEventListener('click', () => {
     Story.active = true;

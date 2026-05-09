@@ -10,10 +10,16 @@ const Input = {
     document.addEventListener('keyup', e => {
       Input.keys[e.key.toLowerCase()] = false;
     });
+    function toWorld(sx, sy) {
+      if (typeof Camera !== 'undefined') return Camera.screenToWorld(sx, sy);
+      return { x: sx, y: sy };
+    }
     canvas.addEventListener('mousemove', e => {
       const r = canvas.getBoundingClientRect();
-      Input.mouse.x = (e.clientX - r.left) * (canvas.width / r.width);
-      Input.mouse.y = (e.clientY - r.top)  * (canvas.height / r.height);
+      Input.mouse.sx = (e.clientX - r.left) * (canvas.width / r.width);
+      Input.mouse.sy = (e.clientY - r.top)  * (canvas.height / r.height);
+      const w = toWorld(Input.mouse.sx, Input.mouse.sy);
+      Input.mouse.x = w.x; Input.mouse.y = w.y;
       if (Editor.draggingResident) Editor.moveDrag(Input.mouse.x, Input.mouse.y);
     });
     canvas.addEventListener('mousedown', e => {

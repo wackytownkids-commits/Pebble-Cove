@@ -26,13 +26,35 @@
     <p class="game-subtitle">a tiny life by the sea</p>
   </div>
   <div class="title-buttons">
-    <button id="btn-new"  class="big-btn primary">New Game</button>
+    <button id="btn-new"  class="big-btn primary">New Game (preset cove)</button>
+    <button id="btn-empty" class="big-btn primary">Build Your Own Cove</button>
     <button id="btn-story" class="big-btn">Story Mode</button>
     <button id="btn-cont" class="big-btn">Continue</button>
-    <button id="btn-set"  class="big-btn">Settings</button>
     <button id="btn-quit" class="big-btn">Quit</button>
   </div>
   <p class="title-credit">v0.4 · made with love · Steam build pending</p>
+</section>
+
+<section id="char-screen" class="screen">
+  <div class="cc-card">
+    <h2 class="cc-title">Create your keeper</h2>
+    <div class="cc-flex">
+      <canvas id="cc-preview" width="200" height="240" class="cc-preview"></canvas>
+      <div class="cc-controls">
+        <input id="cc-name" type="text" maxlength="20" placeholder="Your name" autocomplete="off" />
+        <div class="cc-row"><span>Skin</span><div id="cc-skin" class="cc-swatches"></div></div>
+        <div class="cc-row"><span>Hair color</span><div id="cc-hair" class="cc-swatches"></div></div>
+        <div class="cc-row"><span>Hair style</span><div id="cc-style" class="cc-choices"></div></div>
+        <div class="cc-row"><span>Outfit</span><div id="cc-outfit" class="cc-swatches"></div></div>
+        <div class="cc-row"><span>Accessory</span><div id="cc-accessory" class="cc-choices"></div></div>
+        <div class="cc-row"><span>Mood</span><div id="cc-mood" class="cc-choices"></div></div>
+      </div>
+    </div>
+    <div class="cc-buttons">
+      <button class="big-btn" id="cc-random">Randomize</button>
+      <button class="big-btn primary" id="cc-go">Begin</button>
+    </div>
+  </div>
 </section>
 
 <section id="name-screen" class="screen">
@@ -230,6 +252,9 @@
 <script src="js/save.js"></script>
 <script src="js/input.js"></script>
 <script src="js/touch.js"></script>
+<script src="js/camera.js"></script>
+<script src="js/charcreator.js"></script>
+<script src="js/empty_world.js"></script>
 <script src="js/game.js"></script>
 
 </body>
