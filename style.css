@@ -925,3 +925,57 @@ body.touch .big-btn { padding: 18px 30px; font-size: 22px; }
 @media (max-width: 500px) {
   #btn-add-resident.floating-add { top: auto; bottom: 70px; right: 8px; padding: 10px 14px; font-size: 14px;}
 }
+
+/* big floating action button — Add New Resident */
+#btn-add-resident.fab-add {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 11;
+  padding: 16px 28px;
+  border-radius: 30px;
+  background: linear-gradient(180deg, #ff7faa 0%, #e85088 100%);
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  box-shadow: 0 6px 0 #b03868, 0 0 0 3px white inset;
+  cursor: pointer;
+  pointer-events: auto;
+}
+#btn-add-resident.fab-add:active {
+  transform: translateX(-50%) translateY(2px);
+  box-shadow: 0 3px 0 #b03868, 0 0 0 3px white inset;
+}
+#place-banner {
+  position: absolute;
+  top: 80px; left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, #ffd060 0%, #f5a040 100%);
+  color: #4a3030;
+  padding: 12px 20px;
+  border-radius: 14px;
+  box-shadow: 0 6px 0 #c87838;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 12;
+  font-weight: 600;
+  font-size: 16px;
+  pointer-events: auto;
+}
+#place-banner .pm-cancel {
+  background: white;
+  color: #4a3030;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+@media (max-width: 500px) {
+  #btn-add-resident.fab-add { padding: 14px 22px; font-size: 16px; bottom: 12px;}
+  #hud-side { bottom: 70px !important;}
+}

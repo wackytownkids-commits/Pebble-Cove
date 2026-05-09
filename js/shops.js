@@ -1,4 +1,4 @@
-/* shops.js — every 5 residents you unlock a new shop. */
+/* shops.js — every 5 residents you unlock a new shop. Player places it. */
 const Shops = {
   unlocked: [],
   catalog: [
@@ -10,7 +10,6 @@ const Shops = {
     { id:'theater', name:'Theater',      color:'#5a3a4a', roof:'#3a1a3a', sign:'THEATER', threshold:30 },
   ],
 
-  // call after every population change
   check() {
     const n = Residents.runtime.length;
     for (const s of Shops.catalog) {
@@ -22,14 +21,15 @@ const Shops = {
   },
 
   spawnShop(s) {
-    // place near the cove center but offset so it doesn't overlap others
-    const idx = Shops.unlocked.length - 1;
-    const angle = idx * 1.2;
-    const r = 220;
-    const x = World.W/2 + Math.cos(angle) * r;
-    const y = World.H/2 + Math.sin(angle) * r * 0.6;
-    World.buildings.push({ x, y, w: 100, h: 70, body: s.color, roof: s.roof, sign: s.sign });
-    UI.toast(`🏪 New shop unlocked: ${s.name}!`, 'heart');
+    UI.toast(`New shop unlocked: ${s.name}! Tap where to place it.`, 'heart');
     if (typeof Audio !== 'undefined') Audio.heart();
+    if (typeof PlaceMode !== 'undefined') {
+      PlaceMode.start('shop', `Tap to place: ${s.name}`, (x, y) => {
+        World.buildings.push({ x, y, w: 100, h: 70, body: s.color, roof: s.roof, sign: s.sign });
+        UI.toast(`${s.name} placed!`, 'heart');
+      });
+    } else {
+      World.buildings.push({ x: World.W/2 + 100, y: World.H/2, w: 100, h: 70, body: s.color, roof: s.roof, sign: s.sign });
+    }
   },
 };

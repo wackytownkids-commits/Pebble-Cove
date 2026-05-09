@@ -188,6 +188,11 @@ const Game = {
 
   // tap on world coords (x, y)
   tapAt(x, y) {
+    // place mode steals the tap
+    if (typeof PlaceMode !== 'undefined' && PlaceMode.active) {
+      PlaceMode.tryPlace(x, y);
+      return;
+    }
     const inter = World.nearbyInteraction(x, y);
     if (!inter) return;
     Game.currentInteraction = inter;
@@ -310,7 +315,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function onClickCCGo() {
     const out = CharCreator.finalize();
-    Game.newGame(out.name, out.look);
+    if (gameState._addingResident) {
+      // In-game add: enter place mode; tap on island to drop the new chibi
+      gameState._addingResident = false;
+      document.getElementById('char-screen').classList.remove('visible');
+      document.getElementById('game-screen').classList.add('visible');
+      PlaceMode.start('resident', `Tap where to place ${out.name}`, (x, y) => {
+        const r = Spawn.addResidentAt(x, y, { name: out.name, look: out.look });
+        Letters.generateForDay();
+        gameState.unreadMail = Letters.todays.length;
+      });
+    } else {
+      Game.newGame(out.name, out.look);
+    }
   }
   const ccGo = document.getElementById('cc-go');
   if (ccGo) {
@@ -324,16 +341,14 @@ document.addEventListener('DOMContentLoaded', () => {
     b.addEventListener('click', handler);
     b.addEventListener('touchend', e => { e.preventDefault(); handler(); }, { passive: false });
   });
-  // Add Resident button — drops a new chibi at the camera center
+  // Add Resident button — opens character creator, then "tap to place"
   const addBtn = document.getElementById('btn-add-resident');
   if (addBtn) {
     const onAdd = () => {
-      if (typeof Spawn === 'undefined') return;
-      const cx = Camera.panX, cy = Camera.panY + 30;
-      Spawn.addResidentAt(cx, cy);
-      // re-trigger letters so they can write to you
-      Letters.generateForDay();
-      gameState.unreadMail = Letters.todays.length;
+      // open creator in "in-game" mode — finalize will place instead of starting new game
+      gameState._addingResident = true;
+      CharCreator.init();
+      CharCreator.open();
     };
     addBtn.addEventListener('click', onAdd);
     addBtn.addEventListener('touchend', e => { e.preventDefault(); onAdd(); }, { passive: false });
