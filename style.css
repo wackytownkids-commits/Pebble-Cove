@@ -857,3 +857,47 @@ body.touch .big-btn { padding: 18px 30px; font-size: 22px; }
   .panel { width: 96vw; }
   .panel header h2 { font-size: 18px; }
 }
+
+.cc-gender {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 8px 0;
+}
+.cc-prompt { font-size: 16px; color: var(--ink-soft); }
+.cc-gender-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  width: 100%;
+}
+.cc-gender-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 22px 10px;
+  background: white;
+  border-radius: 18px;
+  border: 3px solid transparent;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+  box-shadow: 0 5px 0 var(--paper-shadow);
+  cursor: pointer;
+  transition: transform 0.06s ease;
+}
+.cc-gender-btn:hover { transform: translateY(-2px); border-color: var(--pink); }
+.cc-gender-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--paper-shadow); }
+.cc-gender-icon { font-size: 38px; color: var(--pink-deep); }
+.cc-gender-btn[data-g="boy"]  .cc-gender-icon { color: #5894c0; }
+.cc-gender-btn[data-g="girl"] .cc-gender-icon { color: #e85088; }
+.cc-gender-btn[data-g="they"] .cc-gender-icon { color: #a888c8; }
+
+@media (max-width: 500px) {
+  .cc-gender-grid { gap: 8px; }
+  .cc-gender-btn { padding: 14px 4px; font-size: 14px; }
+  .cc-gender-icon { font-size: 28px; }
+}

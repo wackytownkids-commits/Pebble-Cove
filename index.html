@@ -38,7 +38,26 @@
 <section id="char-screen" class="screen">
   <div class="cc-card">
     <h2 class="cc-title">Create your keeper</h2>
-    <div class="cc-flex">
+
+    <div id="cc-gender-step" class="cc-gender">
+      <p class="cc-prompt">First — pick how you'd like to be drawn.</p>
+      <div class="cc-gender-grid">
+        <button class="cc-gender-btn" data-g="boy">
+          <span class="cc-gender-icon">♂</span>
+          <span>Boy</span>
+        </button>
+        <button class="cc-gender-btn" data-g="girl">
+          <span class="cc-gender-icon">♀</span>
+          <span>Girl</span>
+        </button>
+        <button class="cc-gender-btn" data-g="they">
+          <span class="cc-gender-icon">✷</span>
+          <span>Neither</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="cc-chibi-step" class="cc-flex" style="display:none;">
       <canvas id="cc-preview" width="200" height="240" class="cc-preview"></canvas>
       <div class="cc-controls">
         <input id="cc-name" type="text" maxlength="20" placeholder="Your name" autocomplete="off" />
@@ -48,11 +67,11 @@
         <div class="cc-row"><span>Outfit</span><div id="cc-outfit" class="cc-swatches"></div></div>
         <div class="cc-row"><span>Accessory</span><div id="cc-accessory" class="cc-choices"></div></div>
         <div class="cc-row"><span>Mood</span><div id="cc-mood" class="cc-choices"></div></div>
+        <div class="cc-buttons">
+          <button class="big-btn" id="cc-random">Randomize</button>
+          <button class="big-btn primary" id="cc-go">Create</button>
+        </div>
       </div>
-    </div>
-    <div class="cc-buttons">
-      <button class="big-btn" id="cc-random">Randomize</button>
-      <button class="big-btn primary" id="cc-go">Begin</button>
     </div>
   </div>
 </section>

@@ -321,6 +321,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   const ccRand = document.getElementById('cc-random');
   if (ccRand) ccRand.addEventListener('click', () => CharCreator.randomize());
+  document.querySelectorAll('.cc-gender-btn').forEach(b => {
+    const handler = () => CharCreator.pickGender(b.dataset.g);
+    b.addEventListener('click', handler);
+    b.addEventListener('touchend', e => { e.preventDefault(); handler(); }, { passive: false });
+  });
   const storyBtn = document.getElementById('btn-story');
   if (storyBtn) storyBtn.addEventListener('click', () => {
     Story.active = true;
