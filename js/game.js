@@ -335,8 +335,10 @@ document.addEventListener('DOMContentLoaded', () => {
     showScreen('game-screen');
   });
 
-  document.getElementById('btn-set').addEventListener('click', () => alert('Settings coming soon'));
-  document.getElementById('btn-quit').addEventListener('click', () => window.close());
+  const btnSet = document.getElementById('btn-set');
+  if (btnSet) btnSet.addEventListener('click', () => alert('Settings: open in-game pause menu (Esc).'));
+  const btnQuit = document.getElementById('btn-quit');
+  if (btnQuit) btnQuit.addEventListener('click', () => window.close());
 
   function onClickBegin() {
     const v = document.getElementById('name-input').value.trim() || 'Keeper';
