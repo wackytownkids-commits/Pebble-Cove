@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pebble Cove</title>
+<link rel="stylesheet" href="style.css" />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Caveat:wght@600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<section id="title-screen" class="screen visible">
+  <div class="title-art">
+    <div class="title-sun"></div>
+    <div class="title-clouds">
+      <div class="cloud cloud-a"></div>
+      <div class="cloud cloud-b"></div>
+      <div class="cloud cloud-c"></div>
+    </div>
+    <div class="title-lighthouse"></div>
+    <div class="title-water"></div>
+    <h1 class="game-title">Pebble&nbsp;Cove</h1>
+    <p class="game-subtitle">a tiny life by the sea</p>
+  </div>
+  <div class="title-buttons">
+    <button id="btn-new"  class="big-btn primary">New Game</button>
+    <button id="btn-story" class="big-btn">Story Mode</button>
+    <button id="btn-cont" class="big-btn">Continue</button>
+    <button id="btn-set"  class="big-btn">Settings</button>
+    <button id="btn-quit" class="big-btn">Quit</button>
+  </div>
+  <p class="title-credit">v0.2 · made with love · Steam build pending</p>
+</section>
+
+<section id="name-screen" class="screen">
+  <div class="paper-card">
+    <h2>What should we call you, keeper?</h2>
+    <input id="name-input" type="text" maxlength="20" placeholder="Your name" />
+    <button id="name-go" class="big-btn primary">Begin</button>
+  </div>
+</section>
+
+<section id="game-screen" class="screen">
+  <header id="hud-top">
+    <div class="clock">
+      <span id="time-of-day">6:00 AM</span>
+      <span id="day-label">Day 1 · Spring</span>
+    </div>
+    <div class="meters">
+      <div class="meter" title="Hunger"><span class="meter-icon meter-hunger"></span><div class="bar"><div class="fill" id="m-hunger"></div></div></div>
+      <div class="meter" title="Thirst"><span class="meter-icon meter-thirst"></span><div class="bar"><div class="fill" id="m-thirst"></div></div></div>
+      <div class="meter" title="Energy"><span class="meter-icon meter-energy"></span><div class="bar"><div class="fill" id="m-energy"></div></div></div>
+      <div class="meter" title="Social"><span class="meter-icon meter-social"></span><div class="bar"><div class="fill" id="m-social"></div></div></div>
+    </div>
+    <div class="purse">
+      <span class="coin-icon"></span>
+      <span id="coin-count">0</span>
+    </div>
+  </header>
+
+  <canvas id="world" width="1280" height="720"></canvas>
+
+  <div id="interact-prompt"><kbd>E</kbd><span id="interact-label">Talk</span></div>
+
+  <aside id="hud-side">
+    <button data-panel="mailbox" title="Mailbox (M)" class="ico-mail"></button>
+    <button data-panel="inventory" title="Inventory (Tab)" class="ico-bag"></button>
+    <button data-panel="relationships" title="Relationships (R)" class="ico-heart"></button>
+    <button data-panel="map" title="Map" class="ico-map"></button>
+    <button data-panel="cookbook" title="Cookbook (C)" class="ico-book"></button>
+    <button data-panel="pause" title="Menu (Esc)" class="ico-menu"></button>
+  </aside>
+
+  <div id="speech-bubble" class="hidden">
+    <div class="speaker"></div>
+    <div class="line"></div>
+  </div>
+
+  <div id="toasts"></div>
+
+  <div id="panel-mailbox" class="panel hidden">
+    <header><h2>Today's mail</h2><button class="panel-close">x</button></header>
+    <div id="letter-list"></div>
+    <div id="letter-view"></div>
+  </div>
+  <div id="panel-inventory" class="panel hidden">
+    <header><h2>Pouch</h2><button class="panel-close">x</button></header>
+    <div id="inv-grid"></div>
+  </div>
+  <div id="panel-relationships" class="panel hidden">
+    <header><h2>The Cove</h2><button class="panel-close">x</button></header>
+    <div id="rel-list"></div>
+  </div>
+  <div id="panel-map" class="panel hidden">
+    <header><h2>Pebble Cove</h2><button class="panel-close">x</button></header>
+    <div id="mini-map"></div>
+  </div>
+  <div id="panel-cookbook" class="panel hidden">
+    <header><h2>Cookbook</h2><button class="panel-close">x</button></header>
+    <div id="recipe-list"></div>
+  </div>
+  <div id="panel-pause" class="panel hidden">
+    <header><h2>Menu</h2><button class="panel-close">x</button></header>
+    <div class="pause-buttons">
+      <button class="big-btn" id="btn-save">Save</button>
+      <button class="big-btn" id="btn-load">Load</button>
+      <button class="big-btn" id="btn-title">Title screen</button>
+    </div>
+  </div>
+
+  <div id="baby-modal" class="modal hidden">
+    <div class="modal-card">
+      <h2>A new arrival?</h2>
+      <p id="baby-text"></p>
+      <div class="modal-buttons">
+        <button class="big-btn primary" id="baby-yes">Yes</button>
+        <button class="big-btn" id="baby-no">Not yet</button>
+      </div>
+    </div>
+  </div>
+  <div id="propose-modal" class="modal hidden">
+    <div class="modal-card">
+      <h2 id="propose-title">Propose?</h2>
+      <p id="propose-text"></p>
+      <div class="modal-buttons">
+        <button class="big-btn primary" id="propose-yes">Yes</button>
+        <button class="big-btn" id="propose-no">Not yet</button>
+      </div>
+    </div>
+  </div>
+  <div id="pres-modal" class="modal hidden">
+    <div class="modal-card">
+      <h2>A request from the President</h2>
+      <p id="pres-text"></p>
+      <div class="modal-buttons">
+        <button class="big-btn primary" id="pres-yes">Approve</button>
+        <button class="big-btn" id="pres-no">Decline</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="editor-toolbar" class="hidden">
+  <button data-tool="select" class="active" title="Select / drag">SEL</button>
+  <button data-tool="tree" title="Plant tree">TREE</button>
+  <button data-tool="flower" title="Plant flower">FLWR</button>
+  <button data-tool="house" title="Place house">HOUSE</button>
+  <button data-tool="add_resident" title="Add resident">+PPL</button>
+  <button data-tool="erase" title="Erase">ERASE</button>
+  <span class="spacer"></span>
+  <span class="ed-title">Edit Mode (B to exit)</span>
+</div>
+
+<script src="js/sprites.js"></script>
+<script src="js/needs.js"></script>
+<script src="js/phases.js"></script>
+<script src="js/relationships.js"></script>
+<script src="js/letters.js"></script>
+<script src="js/residents.js"></script>
+<script src="js/roles.js"></script>
+<script src="js/spawn.js"></script>
+<script src="js/world.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/editor.js"></script>
+<script src="js/story.js"></script>
+<script src="js/president.js"></script>
+<script src="js/save.js"></script>
+<script src="js/input.js"></script>
+<script src="js/touch.js"></script>
+<script src="js/game.js"></script>
+
+</body>
+</html>
