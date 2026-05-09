@@ -337,18 +337,4 @@ const Residents = {
     }
   }
 };
-y = ((r.y + p.y) / 2) - 60;
-          const age = (t - r.lastKissAt) / 1500;
-          Sprites.drawHeart(ctx, cx, cy - age * 30, 18 + age * 10, '#ff5894');
-        }
-      }
-      // pregnancy belly
-      if (r.pregnant) {
-        ctx.fillStyle = r.def.look.outfit;
-        ctx.beginPath();
-        ctx.arc(r.x + r.facing * 4, r.y - 22, 9, 0, Math.PI*2);
-        ctx.fill();
-      }
-    }
-  }
-};
+
