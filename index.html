@@ -26,12 +26,12 @@
     <p class="game-subtitle">a tiny life by the sea</p>
   </div>
   <div class="title-buttons">
-    <button id="btn-new"  class="big-btn primary">New Game (preset cove)</button>
-    <button id="btn-empty" class="big-btn primary">Build Your Own Cove</button>
-    <button id="btn-story" class="big-btn">Story Mode</button>
+    <button id="btn-empty" class="big-btn primary">Build Your Cove</button>
     <button id="btn-cont" class="big-btn">Continue</button>
     <button id="btn-quit" class="big-btn">Quit</button>
   </div>
+  <button id="btn-new" style="display:none;"></button>
+  <button id="btn-story" style="display:none;"></button>
   <p class="title-credit">v0.4 · made with love · Steam build pending</p>
 </section>
 
@@ -107,16 +107,16 @@
   <div id="interact-prompt"><kbd>E</kbd><span id="interact-label">Talk</span></div>
 
   <aside id="hud-side">
-    <button data-panel="mailbox" title="Mailbox (M)" class="ico-mail"></button>
-    <button data-panel="inventory" title="Inventory (Tab)" class="ico-bag"></button>
-    <button data-panel="relationships" title="Relationships (R)" class="ico-heart"></button>
+    <button data-panel="mailbox" title="Mailbox" class="ico-mail"></button>
+    <button data-panel="inventory" title="Inventory" class="ico-bag"></button>
+    <button data-panel="relationships" title="Relationships" class="ico-heart"></button>
     <button data-panel="map" title="Map" class="ico-map"></button>
-    <button data-panel="cookbook" title="Cookbook (C)" class="ico-book"></button>
-    <button data-panel="pairing" title="Pairing Shop">PAIR</button>
-    <button data-panel="facepaint" title="Face Paint">PAINT</button>
-    <button data-panel="dreams" title="Dream Journal">DREAM</button>
-    <button data-panel="minigames" title="Activities">PLAY</button>
-    <button data-panel="pause" title="Menu (Esc)" class="ico-menu"></button>
+    <button data-panel="cookbook" title="Cookbook" class="ico-book"></button>
+    <button data-panel="pairing" title="Pairing Shop" class="ico-pair"></button>
+    <button data-panel="facepaint" title="Face Paint" class="ico-paint"></button>
+    <button data-panel="dreams" title="Dream Journal" class="ico-dream"></button>
+    <button data-panel="minigames" title="Activities" class="ico-play"></button>
+    <button data-panel="pause" title="Menu" class="ico-menu"></button>
   </aside>
 
   <div id="speech-bubble" class="hidden"><div class="speaker"></div><div class="line"></div></div>

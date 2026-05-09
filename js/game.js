@@ -80,23 +80,13 @@ const Game = {
 
     if (newHour < prevHour) Game.endDay();
 
-    let m = Input.movement();
-    if (m.vx === 0 && m.vy === 0) {
-      const j = Touch.joystickVec();
-      if (j) m = j;
-    }
-    const p = gameState.player;
+    // No player movement — Tomodachi-style observer mode.
+    // Camera pan via WASD optionally for accessibility.
+    const m = Input.movement();
     if (m.vx !== 0 || m.vy !== 0) {
-      p.x += m.vx * p.speed * dt;
-      p.y += m.vy * p.speed * dt;
-      p.facing = m.vx >= 0 ? 1 : -1;
-      p.walking = true;
-    } else {
-      p.walking = false;
+      Camera.panTargetX += m.vx * 6;
+      Camera.panTargetY += m.vy * 6;
     }
-    const b = World.barrier();
-    p.x = Math.max(b.x + 20, Math.min(b.x + b.w - 20, p.x));
-    p.y = Math.max(b.y + 30, Math.min(b.y + b.h - 30, p.y));
 
     if (Story.active) Story.tick();
 
@@ -104,14 +94,9 @@ const Game = {
     Relationships.tickNpcAffinities(t, dt);
     Needs.tick(dt);
 
-    const inter = World.nearbyInteraction(p.x, p.y);
-    if (inter) {
-      UI.showInteract(inter.label);
-      Game.currentInteraction = inter;
-    } else {
-      UI.hideInteract();
-      Game.currentInteraction = null;
-    }
+    // No player → no proximity interaction. Interaction comes from clicks/taps.
+    Game.currentInteraction = null;
+    UI.hideInteract();
 
     document.getElementById('m-hunger').style.width = Needs.hunger + '%';
     document.getElementById('m-thirst').style.width = Needs.thirst + '%';
@@ -139,7 +124,7 @@ const Game = {
     World.drawBuildings(ctx, t);
     World.drawTrees(ctx, t);
     Residents.draw(ctx, t);
-    Sprites.drawChibi(ctx, gameState.player.x, gameState.player.y, gameState.player.look, t, gameState.player.walking);
+    // Player avatar is NOT drawn (Tomodachi-style observer mode).
     if (Editor.active) {
       Editor.drawBarrier(ctx);
       Editor.drawHover(ctx);
@@ -199,6 +184,14 @@ const Game = {
     President.maybeRequest();
     UI.toast(`A new day in Pebble Cove. Day ${gameState.dayNumber}.`);
     Save.save();
+  },
+
+  // tap on world coords (x, y)
+  tapAt(x, y) {
+    const inter = World.nearbyInteraction(x, y);
+    if (!inter) return;
+    Game.currentInteraction = inter;
+    Game.tryInteract();
   },
 
   tryInteract() {

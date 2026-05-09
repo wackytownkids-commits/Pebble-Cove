@@ -1,15 +1,11 @@
-/* ============================================================
-   touch.js — touch input + on-screen joystick for phone testing.
-   ============================================================ */
-
+/* touch.js — Tomodachi-style: tap a resident or building to interact, drag to pan camera. */
 const Touch = {
-  joystick: { active: false, baseX: 0, baseY: 0, x: 0, y: 0, id: null },
-  dragId: null,            // touch id currently dragging a resident
-  dragLast: { x: 0, y: 0 },
+  active: null,        // current single-touch
+  startX: 0, startY: 0,
+  lastX: 0, lastY: 0,
+  moved: false,
 
   init() {
-    if (!('ontouchstart' in window) && !navigator.maxTouchPoints) return;
-    document.body.classList.add('touch');
     canvas.addEventListener('touchstart', Touch.onStart, { passive: false });
     canvas.addEventListener('touchmove',  Touch.onMove,  { passive: false });
     canvas.addEventListener('touchend',   Touch.onEnd,   { passive: false });
@@ -17,89 +13,42 @@ const Touch = {
   },
 
   onStart(e) {
-    e.preventDefault();
-    for (const t of e.changedTouches) {
-      const x = t.clientX * (canvas.width / canvas.clientWidth);
-      const y = t.clientY * (canvas.height / canvas.clientHeight);
-
-      // Check if touching a resident (drag-to-meet)
-      const r = Editor.pickResidentAt(x, y);
-      if (r) {
-        Touch.dragId = t.identifier;
-        Touch.dragLast = { x, y };
-        Editor.startDrag(r);
-        continue;
-      }
-      // Otherwise: left half = joystick
-      if (!Touch.joystick.active && x < canvas.width / 2) {
-        Touch.joystick.active = true;
-        Touch.joystick.baseX = x;
-        Touch.joystick.baseY = y;
-        Touch.joystick.x = x;
-        Touch.joystick.y = y;
-        Touch.joystick.id = t.identifier;
-      } else if (x >= canvas.width / 2) {
-        // right side tap = interact
-        Game.tryInteract();
-      }
-    }
+    if (e.touches.length !== 1) { Touch.active = null; return; }
+    const r = canvas.getBoundingClientRect();
+    const t = e.touches[0];
+    Touch.active = t.identifier;
+    Touch.startX = Touch.lastX = (t.clientX - r.left) * (canvas.width / r.width);
+    Touch.startY = Touch.lastY = (t.clientY - r.top)  * (canvas.height / r.height);
+    Touch.moved = false;
   },
 
   onMove(e) {
+    if (Touch.active == null) return;
     e.preventDefault();
+    const r = canvas.getBoundingClientRect();
     for (const t of e.changedTouches) {
-      const x = t.clientX * (canvas.width / canvas.clientWidth);
-      const y = t.clientY * (canvas.height / canvas.clientHeight);
-      if (Touch.joystick.active && t.identifier === Touch.joystick.id) {
-        Touch.joystick.x = x;
-        Touch.joystick.y = y;
-      }
-      if (Touch.dragId === t.identifier) {
-        Editor.moveDrag(x, y);
-        Touch.dragLast = { x, y };
-      }
+      if (t.identifier !== Touch.active) continue;
+      const sx = (t.clientX - r.left) * (canvas.width / r.width);
+      const sy = (t.clientY - r.top)  * (canvas.height / r.height);
+      const dx = sx - Touch.lastX, dy = sy - Touch.lastY;
+      if (Math.hypot(sx - Touch.startX, sy - Touch.startY) > 6) Touch.moved = true;
+      // pan camera
+      Camera.panBy(dx, dy);
+      Touch.lastX = sx; Touch.lastY = sy;
     }
   },
 
   onEnd(e) {
-    e.preventDefault();
-    for (const t of e.changedTouches) {
-      if (t.identifier === Touch.joystick.id) {
-        Touch.joystick.active = false;
-        Touch.joystick.id = null;
-      }
-      if (t.identifier === Touch.dragId) {
-        Touch.dragId = null;
-        Editor.endDrag();
-      }
+    if (Touch.active == null) return;
+    if (!Touch.moved) {
+      // it was a tap — interact
+      const w = Camera.screenToWorld(Touch.startX, Touch.startY);
+      Game.tapAt(w.x, w.y);
     }
+    Touch.active = null;
   },
 
-  // returns {vx, vy} like keyboard movement
-  joystickVec() {
-    if (!Touch.joystick.active) return null;
-    const dx = Touch.joystick.x - Touch.joystick.baseX;
-    const dy = Touch.joystick.y - Touch.joystick.baseY;
-    const d = Math.hypot(dx, dy);
-    if (d < 8) return { vx: 0, vy: 0 };
-    const max = 60;
-    const scale = Math.min(d, max) / max;
-    return { vx: (dx / d) * scale, vy: (dy / d) * scale };
-  },
-
-  drawJoystick(ctx) {
-    if (!Touch.joystick.active) return;
-    ctx.save();
-    ctx.fillStyle = 'rgba(255,255,255,0.3)';
-    ctx.beginPath(); ctx.arc(Touch.joystick.baseX, Touch.joystick.baseY, 60, 0, Math.PI*2); ctx.fill();
-    ctx.fillStyle = 'rgba(232, 80, 136, 0.85)';
-    const dx = Touch.joystick.x - Touch.joystick.baseX;
-    const dy = Touch.joystick.y - Touch.joystick.baseY;
-    const d = Math.hypot(dx, dy);
-    const maxR = 50;
-    const tx = d > maxR ? Touch.joystick.baseX + dx/d*maxR : Touch.joystick.x;
-    const ty = d > maxR ? Touch.joystick.baseY + dy/d*maxR : Touch.joystick.y;
-    ctx.beginPath(); ctx.arc(tx, ty, 28, 0, Math.PI*2); ctx.fill();
-    ctx.restore();
-  },
+  // legacy compatibility
+  joystickVec() { return null; },
+  drawJoystick() {},
 };

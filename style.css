@@ -901,3 +901,8 @@ body.touch .big-btn { padding: 18px 30px; font-size: 22px; }
   .cc-gender-btn { padding: 14px 4px; font-size: 14px; }
   .cc-gender-icon { font-size: 28px; }
 }
+
+.ico-pair { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='8' cy='12' r='4' fill='%23f7c4d8' stroke='%23e89bbb' stroke-width='1.5'/><circle cx='16' cy='12' r='4' fill='%23dcc8f0' stroke='%23b890d8' stroke-width='1.5'/><path d='M12 7 v10' stroke='%23e85088' stroke-width='1.5'/></svg>") !important;}
+.ico-paint { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3 12 L12 3 L21 12 L13 20 L3 20 Z' fill='%23ffd060' stroke='%23a85a20' stroke-width='1.5' stroke-linejoin='round'/><circle cx='8' cy='10' r='1.6' fill='%23e85088'/><circle cx='14' cy='8' r='1.6' fill='%2388c8e8'/><circle cx='16' cy='14' r='1.6' fill='%23a888c8'/></svg>") !important;}
+.ico-dream { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M21 12 a9 9 0 1 1 -9 -9 a7 7 0 0 0 9 9 z' fill='%23dcc8f0' stroke='%237848a8' stroke-width='1.5'/></svg>") !important;}
+.ico-play { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='9' fill='%23b8e3c8' stroke='%2388c8a0' stroke-width='1.5'/><path d='M10 8 v8 l6-4 z' fill='%2388c8a0'/></svg>") !important;}

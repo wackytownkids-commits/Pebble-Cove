@@ -1,18 +1,11 @@
 const World = {
+  // FIXED world bounds (world coords). Terrain doesn't depend on canvas size.
+  W: 1280,
+  H: 720,
+
   trees: [],
   flowers: [],
-  buildings: [
-    { x: 1100, y: 540, w: 100, h: 70, body:'#fbd9b8', roof:'#e85088', sign:'BAKERY' },
-    { x: 800,  y: 280, w: 120, h: 70, body:'#ffe0a0', roof:'#f5a358', sign:'STORE' },
-    { x: 880,  y: 360, w: 90,  h: 60, body:'#f8d8e8', roof:'#e8a0c0', sign:'' },
-    { x: 460,  y: 420, w: 80,  h: 65, body:'#d8d0e8', roof:'#a888c0', sign:'' },
-    { x: 250,  y: 580, w: 80,  h: 60, body:'#c0d8e8', roof:'#5894c0', sign:'' },
-    { x: 1180, y: 380, w: 75,  h: 60, body:'#5a3a4a', roof:'#3a1a3a', sign:'' },
-    { x: 380,  y: 660, w: 90,  h: 50, body:'#a0c898', roof:'#5a8050', sign:'GARDEN' },
-    { x: 220,  y: 320, w: 75,  h: 60, body:'#dcc8f0', roof:'#7848a8', sign:'' },
-    { x: 540,  y: 340, w: 90,  h: 60, body:'#e8d8f8', roof:'#a888c8', sign:'TWINS' },
-    { x: 740,  y: 300, w: 100, h: 70, body:'#a8a8d0', roof:'#5a4a8a', sign:'TOWN HALL' },
-  ],
+  buildings: [],
   lighthouse: { x: 950, y: 320 },
   mailbox: { x: 990, y: 350 },
   cafePos: { x: 640, y: 640 },
@@ -26,31 +19,48 @@ const World = {
     const target = Math.floor(Residents.runtime.length / 10);
     if (target > World.barrierLevel) {
       World.barrierLevel = target;
-      UI.toast(`The cove expands! Barrier grew. (${Residents.runtime.length} residents)`, 'heart');
+      UI.toast(`The cove expands! (${Residents.runtime.length} residents)`, 'heart');
     }
   },
 
   init() {
+    World.buildings = [];
     World.trees = [];
-    const placements = [
-      [120, 320], [80, 440], [180, 480], [300, 220], [380, 280],
-      [600, 260], [620, 420], [880, 510], [1010, 320], [1050, 460],
-      [1230, 240], [1240, 540], [1230, 660],
-      [320, 580], [180, 700], [440, 720], [560, 700], [700, 720],
-      [820, 700], [960, 700], [1100, 700]
-    ];
-    for (const [x, y] of placements) World.trees.push({ x, y, scale: 0.85 + Math.random()*0.5 });
     World.flowers = [];
-    for (let i = 0; i < 60; i++) {
-      const x = 60 + Math.random() * 1180;
-      const y = 200 + Math.random() * 540;
-      const onBuilding = World.buildings.some(b => Math.abs(b.x - x) < 65 && Math.abs(b.y - y) < 50);
-      if (onBuilding) continue;
-      const color = ['#ffd0d8','#ffe0a8','#c0d8ff','#d8c0ff','#ffb0d8'][i%5];
-      World.flowers.push({ x, y, color });
+    // sprinkle some default decor only if not in empty mode
+    if (!gameState._emptyMode) {
+      World.buildings = [
+        { x: 1100, y: 540, w: 100, h: 70, body:'#fbd9b8', roof:'#e85088', sign:'BAKERY' },
+        { x: 800,  y: 280, w: 120, h: 70, body:'#ffe0a0', roof:'#f5a358', sign:'STORE' },
+        { x: 880,  y: 360, w: 90,  h: 60, body:'#f8d8e8', roof:'#e8a0c0', sign:'' },
+        { x: 460,  y: 420, w: 80,  h: 65, body:'#d8d0e8', roof:'#a888c0', sign:'' },
+        { x: 250,  y: 580, w: 80,  h: 60, body:'#c0d8e8', roof:'#5894c0', sign:'' },
+        { x: 1180, y: 380, w: 75,  h: 60, body:'#5a3a4a', roof:'#3a1a3a', sign:'' },
+        { x: 380,  y: 660, w: 90,  h: 50, body:'#a0c898', roof:'#5a8050', sign:'GARDEN' },
+        { x: 220,  y: 320, w: 75,  h: 60, body:'#dcc8f0', roof:'#7848a8', sign:'' },
+        { x: 540,  y: 340, w: 90,  h: 60, body:'#e8d8f8', roof:'#a888c8', sign:'TWINS' },
+        { x: 740,  y: 300, w: 100, h: 70, body:'#a8a8d0', roof:'#5a4a8a', sign:'TOWN HALL' },
+      ];
+      const placements = [
+        [120, 320], [80, 440], [180, 480], [300, 220], [380, 280],
+        [600, 260], [620, 420], [880, 510], [1010, 320], [1050, 460],
+        [1230, 240], [1240, 540], [1230, 660],
+        [320, 580], [180, 700], [440, 720], [560, 700], [700, 720],
+        [820, 700], [960, 700], [1100, 700]
+      ];
+      for (const [x, y] of placements) World.trees.push({ x, y, scale: 0.85 + Math.random()*0.5 });
+      for (let i = 0; i < 60; i++) {
+        const x = 60 + Math.random() * 1180;
+        const y = 200 + Math.random() * 540;
+        const onBuilding = World.buildings.some(b => Math.abs(b.x - x) < 65 && Math.abs(b.y - y) < 50);
+        if (onBuilding) continue;
+        const color = ['#ffd0d8','#ffe0a8','#c0d8ff','#d8c0ff','#ffb0d8'][i%5];
+        World.flowers.push({ x, y, color });
+      }
     }
   },
 
+  // SKY drawn in screen space (before camera)
   drawSky(ctx, hour) {
     const w = canvas.width, h = canvas.height;
     let top, bot;
@@ -73,48 +83,51 @@ const World = {
     }
   },
 
+  // TERRAIN drawn in WORLD coords (after camera applied)
   drawTerrain(ctx) {
-    const w = canvas.width, h = canvas.height;
-    ctx.fillStyle = '#b8dca0';
-    ctx.fillRect(0, h*0.3, w, h*0.7);
-    ctx.fillStyle = '#a0c890';
-    for (let i = 0; i < 200; i++) {
-      const x = (i * 137) % w;
-      const y = h*0.3 + ((i * 91) % (h*0.6));
-      ctx.fillRect(x, y, 3, 2);
+    const W = World.W, H = World.H;
+    // ocean (extends beyond island in all directions, big)
+    ctx.fillStyle = '#5894c0';
+    ctx.fillRect(-1000, -1000, W + 2000, H + 2500);
+    // wave shimmer
+    ctx.fillStyle = 'rgba(255,255,255,0.06)';
+    for (let i = 0; i < 80; i++) {
+      const x = -1000 + (i * 173 + performance.now()*0.015) % (W + 2000);
+      const y = -800 + (i * 91) % (H + 2200);
+      ctx.fillRect(x, y, 12, 2);
     }
-    ctx.fillStyle = '#d8b888';
-    ctx.beginPath();
-    ctx.moveTo(0, h*0.62);
-    ctx.bezierCurveTo(w*0.3, h*0.55, w*0.7, h*0.7, w, h*0.6);
-    ctx.lineTo(w, h*0.66);
-    ctx.bezierCurveTo(w*0.7, h*0.76, w*0.3, h*0.63, 0, h*0.7);
-    ctx.closePath();
-    ctx.fill();
+    // island base — soft round shape
     ctx.fillStyle = '#fbe8c0';
     ctx.beginPath();
-    ctx.moveTo(0, h * 0.85);
-    ctx.bezierCurveTo(w*0.2, h*0.82, w*0.5, h*0.88, w, h*0.84);
-    ctx.lineTo(w, h);
-    ctx.lineTo(0, h);
+    ctx.ellipse(W/2, H/2 + 30, W*0.55, H*0.55, 0, 0, Math.PI*2);
+    ctx.fill();
+    // sand → grass transition
+    const g = ctx.createRadialGradient(W/2, H/2, H*0.15, W/2, H/2, H*0.55);
+    g.addColorStop(0, '#b8dca0');
+    g.addColorStop(0.85, '#b8dca0');
+    g.addColorStop(1, '#fbe8c0');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.ellipse(W/2, H/2 + 10, W*0.5, H*0.48, 0, 0, Math.PI*2);
+    ctx.fill();
+    // grass tufts
+    ctx.fillStyle = '#a0c890';
+    for (let i = 0; i < 200; i++) {
+      const x = (i * 137) % W;
+      const y = (i * 91) % H;
+      const dx = x - W/2, dy = y - H/2;
+      if (dx*dx/(W*W*0.20) + dy*dy/(H*H*0.20) > 1) continue;
+      ctx.fillRect(x, y, 3, 2);
+    }
+    // dirt path
+    ctx.fillStyle = '#d8b888';
+    ctx.beginPath();
+    ctx.moveTo(0, H*0.62);
+    ctx.bezierCurveTo(W*0.3, H*0.55, W*0.7, H*0.7, W, H*0.6);
+    ctx.lineTo(W, H*0.66);
+    ctx.bezierCurveTo(W*0.7, H*0.76, W*0.3, H*0.63, 0, H*0.7);
     ctx.closePath();
     ctx.fill();
-    const wg = ctx.createLinearGradient(0, h*0.93, 0, h);
-    wg.addColorStop(0, '#88c8e8'); wg.addColorStop(1, '#5894c0');
-    ctx.fillStyle = wg;
-    ctx.fillRect(0, h*0.93, w, h*0.07);
-    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
-    ctx.lineWidth = 1.2;
-    for (let i = 0; i < 4; i++) {
-      const yLine = h*0.93 + i*4 + Math.sin(performance.now()*0.001 + i)*1.5;
-      ctx.beginPath();
-      for (let x = 0; x <= w; x += 8) {
-        const dy = Math.sin((x + performance.now()*0.05 + i*30) * 0.04) * 1.2;
-        if (x === 0) ctx.moveTo(x, yLine + dy);
-        else ctx.lineTo(x, yLine + dy);
-      }
-      ctx.stroke();
-    }
   },
 
   drawNightOverlay(ctx, hour) {
@@ -133,8 +146,8 @@ const World = {
     for (const b of World.buildings) {
       Sprites.drawHouse(ctx, b.x, b.y, b.w, b.h, b);
     }
-    Sprites.drawLighthouse(ctx, World.lighthouse.x, World.lighthouse.y, t);
-    Sprites.drawMailbox(ctx, World.mailbox.x, World.mailbox.y, gameState.unreadMail > 0);
+    if (World.lighthouse) Sprites.drawLighthouse(ctx, World.lighthouse.x, World.lighthouse.y, t);
+    if (World.mailbox)    Sprites.drawMailbox(ctx, World.mailbox.x, World.mailbox.y, gameState.unreadMail > 0);
     const fx = World.cafePos.x, fy = World.cafePos.y;
     ctx.fillStyle = 'rgba(60,30,30,0.18)';
     ctx.beginPath(); ctx.ellipse(fx, fy + 4, 36, 8, 0, 0, Math.PI*2); ctx.fill();
@@ -144,12 +157,6 @@ const World = {
     ctx.beginPath(); ctx.arc(fx, fy, 22, 0, Math.PI*2); ctx.fill();
     ctx.fillStyle = '#5894c0';
     ctx.beginPath(); ctx.arc(fx, fy, 6, 0, Math.PI*2); ctx.fill();
-    for (let i = 0; i < 5; i++) {
-      const a = (t * 0.003 + i) % 1;
-      const sy = fy - a * 18;
-      ctx.fillStyle = `rgba(180, 220, 240, ${1 - a})`;
-      ctx.fillRect(fx + Math.sin(i*1.7)*3, sy, 2, 2);
-    }
   },
 
   drawDecor(ctx, t) {
@@ -161,26 +168,19 @@ const World = {
     for (const tr of sorted) Sprites.drawTree(ctx, tr.x, tr.y, t, tr.scale);
   },
 
+  // tap-to-interact: returns interaction object at world (px,py)
   nearbyInteraction(px, py) {
-    if (Math.hypot(px - World.mailbox.x, py - World.mailbox.y) < 50)
+    if (World.mailbox && Math.hypot(px - World.mailbox.x, py - World.mailbox.y) < 50)
       return { kind:'mailbox', label: 'Open mailbox' };
-    if (Math.hypot(px - World.lighthouse.x, py - World.lighthouse.y - 30) < 60)
-      return { kind:'home', label: 'Sleep / cook / craft' };
+    if (World.lighthouse && Math.hypot(px - World.lighthouse.x, py - World.lighthouse.y - 30) < 60)
+      return { kind:'home', label: 'Sleep' };
     if (Math.hypot(px - World.cafePos.x, py - World.cafePos.y) < 50)
-      return { kind:'fountain', label: 'Drink (free)' };
+      return { kind:'fountain', label: 'Drink' };
     for (const r of Residents.runtime) {
-      if (Math.hypot(px - r.x, py - r.y) < 32) {
-        return { kind:'talk', resident: r, label: `Talk to ${r.def.name}` };
+      if (Math.hypot(px - r.x, py - r.y + 30) < 38) {
+        return { kind:'talk', resident: r, label: r.def.name };
       }
     }
-    const store = World.buildings.find(b => b.sign === 'STORE');
-    if (store && Math.hypot(px - store.x, py - store.y) < 60)
-      return { kind:'store', label: 'General Store' };
-    const bakery = World.buildings.find(b => b.sign === 'BAKERY');
-    if (bakery && Math.hypot(px - bakery.x, py - bakery.y) < 60)
-      return { kind:'bakery', label: 'Buy a bun (5 coin)' };
-    if (py > canvas.height * 0.85)
-      return { kind:'beach', label: 'Forage at shore' };
     return null;
   }
 };

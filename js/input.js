@@ -22,8 +22,10 @@ const Input = {
       Input.mouse.x = w.x; Input.mouse.y = w.y;
       if (Editor.draggingResident) Editor.moveDrag(Input.mouse.x, Input.mouse.y);
     });
+    let mouseDownStart = null;
     canvas.addEventListener('mousedown', e => {
       Input.mouse.down = true;
+      mouseDownStart = { x: Input.mouse.sx, y: Input.mouse.sy };
       if (e.button === 2 || Editor.active) {
         const r = Editor.pickResidentAt(Input.mouse.x, Input.mouse.y);
         if (r) { Editor.startDrag(r); return; }
@@ -34,6 +36,11 @@ const Input = {
       }
       const r = Editor.pickResidentAt(Input.mouse.x, Input.mouse.y);
       if (r) Editor.startDrag(r);
+    });
+    canvas.addEventListener('click', e => {
+      // desktop: click to interact (tap-style)
+      if (Editor.active || Editor.draggingResident) return;
+      Game.tapAt(Input.mouse.x, Input.mouse.y);
     });
     canvas.addEventListener('mouseup', () => {
       Input.mouse.down = false;

@@ -18,12 +18,16 @@ const Letters = {
 
   generateForDay() {
     Letters.todays = [];
+    // only allow letters from residents who actually live in the cove
+    const validIds = new Set(Residents.runtime.map(r => r.def.id));
+    if (validIds.size === 0) return;  // empty cove → no letters
     if (typeof Arcs !== 'undefined') {
       Arcs.autoStart();
       Arcs.injectMorningLetters(Letters.todays);
+      Letters.todays = Letters.todays.filter(l => validIds.has(l.from));
     }
-    const count = Math.max(2, 4 + Math.floor(Math.random() * 3) - Letters.todays.length);
-    const pool  = [...Letters.templates];
+    const count = Math.max(0, Math.min(validIds.size, 4 + Math.floor(Math.random() * 3) - Letters.todays.length));
+    const pool  = Letters.templates.filter(t => validIds.has(t.from));
     for (let i = 0; i < count && pool.length; i++) {
       const idx = (Math.random() * pool.length) | 0;
       const t = pool.splice(idx, 1)[0];
