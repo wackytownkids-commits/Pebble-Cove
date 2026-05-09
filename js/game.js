@@ -324,6 +324,20 @@ document.addEventListener('DOMContentLoaded', () => {
     b.addEventListener('click', handler);
     b.addEventListener('touchend', e => { e.preventDefault(); handler(); }, { passive: false });
   });
+  // Add Resident button — drops a new chibi at the camera center
+  const addBtn = document.getElementById('btn-add-resident');
+  if (addBtn) {
+    const onAdd = () => {
+      if (typeof Spawn === 'undefined') return;
+      const cx = Camera.panX, cy = Camera.panY + 30;
+      Spawn.addResidentAt(cx, cy);
+      // re-trigger letters so they can write to you
+      Letters.generateForDay();
+      gameState.unreadMail = Letters.todays.length;
+    };
+    addBtn.addEventListener('click', onAdd);
+    addBtn.addEventListener('touchend', e => { e.preventDefault(); onAdd(); }, { passive: false });
+  }
   const storyBtn = document.getElementById('btn-story');
   if (storyBtn) storyBtn.addEventListener('click', () => {
     Story.active = true;

@@ -52,8 +52,10 @@ const Spawn = {
 
     // expand barrier if we crossed a threshold
     World.maybeExpandBarrier();
+    if (typeof Shops !== 'undefined') Shops.check();
+    if (typeof Camera !== 'undefined') Camera.moveTo(x, y);
 
-    UI.toast(`✨ ${name} moved into the cove!`, 'heart');
+    UI.toast(`${name} moved into the cove!`, 'heart');
     return runtimeEntry;
   },
 
