@@ -237,6 +237,34 @@ const Game = {
         } else { UI.toast('Need 5 coin for a bun.'); }
         break;
       }
+      case 'building': {
+        const b = inter.building;
+        const sign = (b.sign || 'building');
+        const lines = {
+          'CAFE': 'Inside the cafe: warm hum of conversation, syrup-pancake smell. +5 social.',
+          'BAKERY': 'Mum waves you in. Cinnamon. Fresh bread. +1 cinnamon bun.',
+          'STORE': 'Pip\'s general store. Bought bread + water for 8 coin.',
+          'GALLERY': 'Quiet halls, framed paintings. You leave inspired. +5 social.',
+          'ARCADE': 'Chip-tune blasting. You won 4 coins.',
+          'SALON': 'Fresh hairdo. You feel confident. +6 social.',
+          'THEATER': 'A play about cove gulls. Surprisingly moving.',
+          'TOWN HALL': 'The mayor is delivering a speech to no one.',
+          'GARDEN': 'Bramble grunts at you. You leave with herbs.',
+          'TWINS': 'Echo and Wren wave in unison.',
+        };
+        UI.toast(`🏠 ${lines[sign] || ('You step into the ' + sign + '.')}`);
+        if (sign === 'BAKERY') gameState.inventory.cinnamon_bun = (gameState.inventory.cinnamon_bun || 0) + 1;
+        else if (sign === 'STORE' && gameState.coins >= 8) {
+          gameState.coins -= 8;
+          gameState.inventory.bread = (gameState.inventory.bread || 0) + 1;
+          gameState.inventory.water = (gameState.inventory.water || 0) + 1;
+        } else if (sign === 'CAFE' || sign === 'GALLERY') Needs.socialize(8);
+        else if (sign === 'ARCADE') gameState.coins += 4;
+        else if (sign === 'SALON') Needs.socialize(8);
+        else if (sign === 'GARDEN') gameState.inventory.herbs = (gameState.inventory.herbs || 0) + 1;
+        if (typeof Audio !== 'undefined') Audio.coin();
+        break;
+      }
       case 'talk': {
         const r = inter.resident;
         const line = r.def.lines[(Math.random()*r.def.lines.length)|0]

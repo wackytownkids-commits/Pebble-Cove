@@ -181,6 +181,12 @@ const World = {
         return { kind:'talk', resident: r, label: r.def.name };
       }
     }
+    // any building (shops etc.)
+    for (const b of World.buildings) {
+      if (Math.abs(px - b.x) < b.w/2 + 10 && Math.abs(py - b.y) < b.h/2 + 10) {
+        return { kind:'building', building: b, label: 'Enter ' + (b.sign || 'building') };
+      }
+    }
     return null;
   }
 };

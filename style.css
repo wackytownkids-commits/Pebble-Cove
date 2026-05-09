@@ -979,3 +979,15 @@ body.touch .big-btn { padding: 18px 30px; font-size: 22px; }
   #btn-add-resident.fab-add { padding: 14px 22px; font-size: 16px; bottom: 12px;}
   #hud-side { bottom: 70px !important;}
 }
+
+.rel-role-row { margin-top: 6px; }
+.rel-role-select {
+  font-family: inherit;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 2px solid var(--paper-shadow);
+  background: white;
+  color: var(--ink);
+  cursor: pointer;
+}

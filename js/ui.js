@@ -250,9 +250,14 @@ const UI = {
       if (r.pregnant) babyTag += `<span class="rel-tag">expecting</span>`;
       const roleTag = r.role && r.role !== 'Citizen'
         ? `<span class="rel-tag" style="background:#5a4a8a">${r.role}</span>` : '';
+      const roleSelect = `<select class="rel-role-select" data-rid="${r.def.id}">
+        ${(typeof Roles !== 'undefined' ? Roles.available : ['Citizen','Worker','Shopkeeper','Vice President','President']).map(role =>
+          `<option value="${role}" ${(r.role||'Citizen')===role?'selected':''}>${role}</option>`).join('')}
+      </select>`;
       info.innerHTML = `
         <div class="name">${r.def.name}${roleTag}${partnerTag}${babyTag}</div>
-        <div class="status">${r.def.archetype} · ${phaseLabel}</div>`;
+        <div class="status">${r.def.archetype} · ${phaseLabel}</div>
+        <div class="rel-role-row">${roleSelect}</div>`;
       const heartsEl = document.createElement('div');
       heartsEl.className = 'rel-hearts';
       heartsEl.innerHTML = heartHtml;
@@ -261,6 +266,13 @@ const UI = {
       row.appendChild(heartsEl);
       list.appendChild(row);
     }
+    // wire role selectors
+    list.querySelectorAll('.rel-role-select').forEach(sel => {
+      sel.addEventListener('change', e => {
+        if (typeof Roles !== 'undefined') Roles.assign(sel.dataset.rid, sel.value);
+        UI.renderRelationships();
+      });
+    });
   },
 
   renderCookbook() {

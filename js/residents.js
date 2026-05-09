@@ -288,10 +288,10 @@ const Residents = {
         if (Math.hypot(r.x - sx, r.y - sy) > 6) {
           r.tx = sx; r.ty = sy;
         } else {
-          // micro wander when arrived
-          if (Math.random() < 0.001) {
-            r.tx = sx + (Math.random()*40-20);
-            r.ty = sy + (Math.random()*40-20);
+          // micro wander when arrived — much more active now
+          if (Math.random() < 0.012) {
+            r.tx = sx + (Math.random()*120-60);
+            r.ty = sy + (Math.random()*100-50);
           }
         }
       }
@@ -301,7 +301,7 @@ const Residents = {
       const dy = r.ty - r.y;
       const d  = Math.hypot(dx, dy);
       if (d > 1) {
-        const speed = 32 * dt; // px per second-ish
+        const speed = 55 * dt; // faster walk
         r.x += (dx/d) * Math.min(speed, d);
         r.y += (dy/d) * Math.min(speed, d);
         r.facing = dx >= 0 ? 1 : -1;
