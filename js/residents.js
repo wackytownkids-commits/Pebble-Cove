@@ -286,12 +286,15 @@ const Residents = {
         // follow schedule
         const [sx, sy] = Residents.scheduledSpot(r, hour);
         if (Math.hypot(r.x - sx, r.y - sy) > 6) {
-          r.tx = sx; r.ty = sy;
+          // already heading somewhere? only re-aim if target far from schedule
+          if (Math.hypot(r.tx - sx, r.ty - sy) > 80) {
+            r.tx = sx; r.ty = sy;
+          }
         } else {
-          // micro wander when arrived — much more active now
-          if (Math.random() < 0.012) {
-            r.tx = sx + (Math.random()*120-60);
-            r.ty = sy + (Math.random()*100-50);
+          // micro wander — pick new spot every ~1s
+          if (Math.random() < 0.04) {
+            r.tx = sx + (Math.random()*180-90);
+            r.ty = sy + (Math.random()*140-70);
           }
         }
       }
@@ -301,7 +304,7 @@ const Residents = {
       const dy = r.ty - r.y;
       const d  = Math.hypot(dx, dy);
       if (d > 1) {
-        const speed = 55 * dt; // faster walk
+        const speed = 110 * dt; // visibly walking
         r.x += (dx/d) * Math.min(speed, d);
         r.y += (dy/d) * Math.min(speed, d);
         r.facing = dx >= 0 ? 1 : -1;
