@@ -25,6 +25,21 @@ const UI = {
     const pn = document.getElementById('pres-no');
     if (py) py.addEventListener('click', () => President.approve());
     if (pn) pn.addEventListener('click', () => President.decline());
+    // volume sliders
+    const m = document.getElementById('vol-master');
+    const mu = document.getElementById('vol-music');
+    const v = document.getElementById('vol-voice');
+    const s = document.getElementById('vol-sfx');
+    if (m) {
+      m.value  = parseFloat(localStorage.getItem('vol_master') ?? '0.8');
+      mu.value = parseFloat(localStorage.getItem('vol_music')  ?? '0.35');
+      v.value  = parseFloat(localStorage.getItem('vol_voice')  ?? '0.7');
+      s.value  = parseFloat(localStorage.getItem('vol_sfx')    ?? '0.6');
+      m.addEventListener('input',  e => Audio.setMaster(parseFloat(e.target.value)));
+      mu.addEventListener('input', e => Audio.setMusic(parseFloat(e.target.value)));
+      v.addEventListener('input',  e => Audio.setVoice(parseFloat(e.target.value)));
+      s.addEventListener('input',  e => Audio.setSfx(parseFloat(e.target.value)));
+    }
   },
 
   showInteract(label) {
@@ -41,6 +56,15 @@ const UI = {
     UI.bubbleEl.style.top  = (y - 30) + 'px';
     clearTimeout(UI._bubbleTimeout);
     UI._bubbleTimeout = setTimeout(() => UI.bubbleEl.classList.add('hidden'), 2800);
+    // chibi voice per resident pitch
+    if (typeof Audio !== 'undefined') {
+      const def = Residents.defs.find(d => d.name === speaker);
+      const pitch = def ? (def.look && def.look.hairStyle === 'long' ? 1.2 : (def.archetype === 'gremlin-child' ? 1.5 : (def.archetype === 'fisherman' ? 0.7 : 1.0))) : 1.0;
+      const syllables = Math.min(8, Math.max(2, Math.round(line.length / 6)));
+      for (let i = 0; i < syllables; i++) {
+        setTimeout(() => Audio.voiceBlip(pitch), i * 90);
+      }
+    }
   },
 
   toast(text, kind) {
@@ -50,6 +74,11 @@ const UI = {
     UI.toastsEl.appendChild(div);
     setTimeout(() => div.classList.add('fade'), 2200);
     setTimeout(() => div.remove(), 2900);
+    if (typeof Audio !== 'undefined') {
+      if (kind === 'heart') Audio.heart();
+      else if (kind === 'coin') Audio.coin();
+      else Audio.pop();
+    }
   },
 
   spark(x, y, text, color) {
@@ -139,6 +168,7 @@ const UI = {
       if (!Phases.hasMet(L.from, 'player')) Phases.meet(L.from, 'player');
       Phases.bumpAffinity(L.from, 'player', map[tone]);
     }
+    if (typeof Arcs !== 'undefined' && L.arcId) Arcs.onReply(L, tone);
     GameState.coins += 1;
     UI.toast(`${tone} reply sent (${map[tone] >= 0 ? '+' : ''}${map[tone]} affinity)`, 'heart');
     UI.openLetter(L);

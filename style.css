@@ -662,6 +662,18 @@ button {
 
 .hidden { display: none !important; }
 
+.vol-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 15px;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+.vol-row input[type=range] { flex: 1; accent-color: var(--pink-deep); }
+
+
 #editor-toolbar {
   position: absolute;
   bottom: 16px;

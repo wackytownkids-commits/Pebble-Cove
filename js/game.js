@@ -180,6 +180,7 @@ const Game = {
     gameState.unreadMail = Letters.todays.length;
     Relationships.tickPregnancies(gameState.dayNumber);
     Phases.dailyTick();
+    if (typeof Festivals !== 'undefined') Festivals.tick();
     President.maybeRequest();
     UI.toast(`A new day in Pebble Cove. Day ${gameState.dayNumber}.`);
     Save.save();
