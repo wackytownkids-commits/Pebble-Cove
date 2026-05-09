@@ -267,7 +267,12 @@ const Game = {
 
       showScreen('game-screen');
       Game.start();
-      if (gameState._emptyMode && typeof EmptyWorld !== 'undefined') EmptyWorld.apply();
+      if (gameState._emptyMode && typeof EmptyWorld !== 'undefined') {
+        EmptyWorld.apply();
+        // re-generate letters now that the cove is empty
+        Letters.generateForDay();
+        gameState.unreadMail = Letters.todays.length;
+      }
       if (typeof Story !== 'undefined' && Story.active) Story.start();
     } catch (err) {
       console.error('newGame failed:', err);
