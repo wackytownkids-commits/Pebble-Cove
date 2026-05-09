@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="theme-color" content="#f7c4d8" />
 <title>Pebble Cove</title>
 <link rel="stylesheet" href="style.css" />
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Caveat:wght@600&display=swap" rel="stylesheet" />
@@ -29,13 +32,13 @@
     <button id="btn-set"  class="big-btn">Settings</button>
     <button id="btn-quit" class="big-btn">Quit</button>
   </div>
-  <p class="title-credit">v0.2 · made with love · Steam build pending</p>
+  <p class="title-credit">v0.4 · made with love · Steam build pending</p>
 </section>
 
 <section id="name-screen" class="screen">
   <div class="paper-card">
     <h2>What should we call you, keeper?</h2>
-    <input id="name-input" type="text" maxlength="20" placeholder="Your name" />
+    <input id="name-input" type="text" maxlength="20" placeholder="Your name" autocomplete="off" autocapitalize="words" />
     <button id="name-go" class="big-btn primary">Begin</button>
   </div>
 </section>
@@ -68,14 +71,14 @@
     <button data-panel="relationships" title="Relationships (R)" class="ico-heart"></button>
     <button data-panel="map" title="Map" class="ico-map"></button>
     <button data-panel="cookbook" title="Cookbook (C)" class="ico-book"></button>
+    <button data-panel="pairing" title="Pairing Shop">PAIR</button>
+    <button data-panel="facepaint" title="Face Paint">PAINT</button>
+    <button data-panel="dreams" title="Dream Journal">DREAM</button>
+    <button data-panel="minigames" title="Activities">PLAY</button>
     <button data-panel="pause" title="Menu (Esc)" class="ico-menu"></button>
   </aside>
 
-  <div id="speech-bubble" class="hidden">
-    <div class="speaker"></div>
-    <div class="line"></div>
-  </div>
-
+  <div id="speech-bubble" class="hidden"><div class="speaker"></div><div class="line"></div></div>
   <div id="toasts"></div>
 
   <div id="panel-mailbox" class="panel hidden">
@@ -99,6 +102,40 @@
     <header><h2>Cookbook</h2><button class="panel-close">x</button></header>
     <div id="recipe-list"></div>
   </div>
+  <div id="panel-pairing" class="panel hidden">
+    <header><h2>Pairing Shop</h2><button class="panel-close">x</button></header>
+    <div style="padding:14px 22px;color:#7a5a5a;font-size:14px;">Pick two residents. Pay 50 coins to set them up. They'll get a +35 affinity boost and walk to meet.</div>
+    <div id="pair-grid" class="pair-grid"></div>
+    <div style="padding:14px 22px;display:flex;gap:12px;align-items:center;">
+      <span id="pair-status" style="flex:1;font-size:15px;color:#7a5a5a;"></span>
+      <button class="big-btn primary" id="pair-confirm" disabled>Pair</button>
+    </div>
+  </div>
+  <div id="panel-facepaint" class="panel hidden">
+    <header><h2>Face Paint</h2><button class="panel-close">x</button></header>
+    <div style="padding:10px 20px;color:#7a5a5a;font-size:14px;">Pick who, then pick a pattern.</div>
+    <div id="fp-residents" class="pair-grid"></div>
+    <div style="padding:8px 20px;font-weight:600;color:#4a3030;">Patterns</div>
+    <div id="fp-patterns" class="fp-patterns"></div>
+  </div>
+  <div id="panel-dreams" class="panel hidden">
+    <header><h2>Dream Journal</h2><button class="panel-close">x</button></header>
+    <div id="dream-body" style="padding:18px 24px;"></div>
+  </div>
+  <div id="panel-minigames" class="panel hidden">
+    <header><h2>Activities</h2><button class="panel-close">x</button></header>
+    <div style="padding:14px 22px;display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="big-btn" onclick="Minigames.open('rps')">Rock Paper Scissors</button>
+      <button class="big-btn" onclick="Minigames.open('fish')">Fishing</button>
+      <button class="big-btn" onclick="Minigames.open('dance')">Dance-off</button>
+    </div>
+    <div id="mg-body" style="padding:14px 22px;"></div>
+  </div>
+  <div id="panel-gifts" class="panel hidden">
+    <header><h2 id="gift-target">Give a gift</h2><button class="panel-close">x</button></header>
+    <div id="gift-list" style="padding:14px 22px;display:flex;flex-direction:column;gap:8px;"></div>
+  </div>
+
   <div id="panel-pause" class="panel hidden">
     <header><h2>Menu</h2><button class="panel-close">x</button></header>
     <div class="pause-buttons">
@@ -143,6 +180,16 @@
       </div>
     </div>
   </div>
+  <div id="leave-modal" class="modal hidden">
+    <div class="modal-card">
+      <h2>Don't go!</h2>
+      <p id="leave-text"></p>
+      <div class="modal-buttons">
+        <button class="big-btn primary" id="leave-beg">Beg them to stay</button>
+        <button class="big-btn" id="leave-go">Let them go</button>
+      </div>
+    </div>
+  </div>
 </section>
 
 <div id="editor-toolbar" class="hidden">
@@ -172,6 +219,14 @@
 <script src="js/editor.js"></script>
 <script src="js/story.js"></script>
 <script src="js/president.js"></script>
+<script src="js/happiness.js"></script>
+<script src="js/pairing.js"></script>
+<script src="js/dreams.js"></script>
+<script src="js/facepaint.js"></script>
+<script src="js/minigames.js"></script>
+<script src="js/marriage.js"></script>
+<script src="js/babyaging.js"></script>
+<script src="js/gifts.js"></script>
 <script src="js/save.js"></script>
 <script src="js/input.js"></script>
 <script src="js/touch.js"></script>

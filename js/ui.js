@@ -25,6 +25,12 @@ const UI = {
     const pn = document.getElementById('pres-no');
     if (py) py.addEventListener('click', () => President.approve());
     if (pn) pn.addEventListener('click', () => President.decline());
+    const lb = document.getElementById('leave-beg');
+    const lg = document.getElementById('leave-go');
+    if (lb) lb.addEventListener('click', () => LeaveIsland.beg());
+    if (lg) lg.addEventListener('click', () => LeaveIsland.letGo());
+    const pc = document.getElementById('pair-confirm');
+    if (pc) pc.addEventListener('click', () => Pairing.confirm());
     // volume sliders
     const m = document.getElementById('vol-master');
     const mu = document.getElementById('vol-music');
@@ -114,6 +120,9 @@ const UI = {
     if (name === 'relationships') UI.renderRelationships();
     if (name === 'cookbook')      UI.renderCookbook();
     if (name === 'map')           UI.renderMap();
+    if (name === 'pairing' && typeof Pairing !== 'undefined')  Pairing.render();
+    if (name === 'facepaint' && typeof FacePaint !== 'undefined') FacePaint.open();
+    if (name === 'dreams' && typeof Dreams !== 'undefined')    Dreams.openJournal();
   },
   closeAllPanels() {
     document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));

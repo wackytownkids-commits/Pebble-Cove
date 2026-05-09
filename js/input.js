@@ -49,6 +49,16 @@ const Input = {
     else if (k === 'e')      Game.tryInteract();
     else if (k === 'b')      Editor.toggle();
     else if (k === 'c')      UI.openPanel('cookbook');
+    else if (k === 'g') {
+      // give gift to nearby resident
+      const inter = Game.currentInteraction;
+      if (inter && inter.kind === 'talk' && typeof Gifts !== 'undefined') {
+        Gifts.open(inter.resident);
+      }
+    }
+    else if (k === 'p')      UI.openPanel('pairing');
+    else if (k === 'f')      UI.openPanel('facepaint');
+    else if (k === 'd')      UI.openPanel('dreams');
   },
 
   movement() {

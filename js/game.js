@@ -1,5 +1,5 @@
 /* ============================================================
-   game.js — main loop + state + bootstrap (v0.2)
+   game.js — main loop + state + bootstrap (v0.4)
    ============================================================ */
 
 let canvas, ctx;
@@ -42,6 +42,7 @@ const Game = {
     Residents.init();
     Relationships.init();
     Roles.init();
+    if (typeof Happiness !== 'undefined') Happiness.init();
     Letters.generateForDay();
     gameState.unreadMail = Letters.todays.length;
     UI.init();
@@ -181,6 +182,9 @@ const Game = {
     Relationships.tickPregnancies(gameState.dayNumber);
     Phases.dailyTick();
     if (typeof Festivals !== 'undefined') Festivals.tick();
+    if (typeof Happiness !== 'undefined') Happiness.daily();
+    if (typeof Dreams !== 'undefined') { Dreams.nightly(); Dreams.showMorning(); }
+    if (typeof BabyAging !== 'undefined') BabyAging.daily();
     President.maybeRequest();
     UI.toast(`A new day in Pebble Cove. Day ${gameState.dayNumber}.`);
     Save.save();
@@ -247,17 +251,22 @@ const Game = {
   },
 
   async newGame(name) {
-    Save.wipe();
-    gameState.playerName = name || 'Keeper';
-    gameState.coins = 25;
-    gameState.dayNumber = 1;
-    gameState.seasonIndex = 0;
-    gameState.timeOfDay = 6/24;
-    gameState.inventory = { polished_pebble: 2, herbs: 1 };
+    try {
+      Save.wipe();
+      gameState.playerName = name || 'Keeper';
+      gameState.coins = 25;
+      gameState.dayNumber = 1;
+      gameState.seasonIndex = 0;
+      gameState.timeOfDay = 6/24;
+      gameState.inventory = { polished_pebble: 2, herbs: 1 };
 
-    Game.start();
-    if (Story.active) Story.start();
-    showScreen('game-screen');
+      showScreen('game-screen');
+      Game.start();
+      if (typeof Story !== 'undefined' && Story.active) Story.start();
+    } catch (err) {
+      console.error('newGame failed:', err);
+      alert('Could not start the game: ' + err.message + '\nReload the page and try again.');
+    }
   }
 };
 
@@ -269,11 +278,13 @@ function showScreen(id) {
 document.addEventListener('DOMContentLoaded', () => {
   if (!Save.exists()) document.getElementById('btn-cont').style.opacity = 0.4;
 
-  document.getElementById('btn-new').addEventListener('click', () => {
-    Story.active = false;
+  function onClickNew() {
+    if (typeof Story !== 'undefined') Story.active = false;
     showScreen('name-screen');
     setTimeout(() => document.getElementById('name-input').focus(), 100);
-  });
+  }
+  document.getElementById('btn-new').addEventListener('click', onClickNew);
+  document.getElementById('btn-new').addEventListener('touchend', e => { e.preventDefault(); onClickNew(); }, { passive: false });
   const storyBtn = document.getElementById('btn-story');
   if (storyBtn) storyBtn.addEventListener('click', () => {
     Story.active = true;
@@ -291,10 +302,12 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-set').addEventListener('click', () => alert('Settings coming soon'));
   document.getElementById('btn-quit').addEventListener('click', () => window.close());
 
-  document.getElementById('name-go').addEventListener('click', () => {
+  function onClickBegin() {
     const v = document.getElementById('name-input').value.trim() || 'Keeper';
     Game.newGame(v);
-  });
+  }
+  document.getElementById('name-go').addEventListener('click', onClickBegin);
+  document.getElementById('name-go').addEventListener('touchend', e => { e.preventDefault(); onClickBegin(); }, { passive: false });
   document.getElementById('name-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') document.getElementById('name-go').click();
   });

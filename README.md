@@ -1,55 +1,80 @@
-# PEBBLE COVE
+# PEBBLE COVE — v0.4
 
-A pastel chibi life-sim — Tomodachi vibes, brand new game, runs in your browser, ready to wrap into a Steam release later.
+A pastel chibi life-sim. Tomodachi vibes, Steam-bound. Plays in any browser, online or offline.
 
-## How to play
-
-Double-click **Play Pebble Cove.bat** (or open `index.html` in any browser). That's it.
+**Live URL:** https://wackytownkids-commits.github.io/Pebble-Cove/
 
 ## Controls
 
-- **WASD / arrows** — walk
-- **E** — interact (talk, open mailbox, sleep, forage, buy)
-- **M** — mailbox
-- **Tab** — inventory
-- **R** — relationships screen
-- **B** — cookbook (crafting)
-- **Esc** — menu (save / load / quit)
+PC keyboard:
+- WASD / arrows = walk
+- E = interact (talk, mailbox, sleep, forage)
+- G = give a gift to the resident you're next to
+- M = mailbox · Tab = inventory · R = relationships · C = cookbook
+- P = pairing shop · F = face paint · D = dream journal
+- B = world editor (place / drag / erase)
+- Esc = pause + settings
 
-## What's in v0.1
+Mobile (phone):
+- Left half = touch joystick
+- Right half = tap to interact
+- Drag any chibi onto another to introduce them (50/50 chance they hit it off)
 
-- Walkable pastel cove with 12 chibi residents living their lives
-- Real day/night cycle, four seasons, weather (sakura petals in spring, snow in winter)
-- **Hunger / Thirst / Energy / Social** meters that you must keep topped up
-- Eat at the bakery, drink at the fountain, sleep at the lighthouse
-- **Letter mail** from residents every morning — read, reply (warm/sassy/formal), build affinity
-- **Friendship → Best Friend → Dating → Engaged → Married** progression with everyone
-- **NPCs date and marry each other** organically based on compatibility + proximity
-- Married couples **kiss visibly** with hearts in-world, often
-- Married couples ask if they want **a baby** — they walk to their house, three days later a baby arrives
-- Babies grow into the family (named procedurally)
-- **Crafting**: forage on the beach, combine items into gifts at the cookbook
-- **Save / load** to localStorage (Steam Cloud-ready when wrapped in Electron)
-- A whole UI — mailbox panel, inventory, relationships book, mini-map, cookbook, pause menu
+## Features
 
-## Why this is different from Tomodachi
+**World** — pastel walkable cove, 12 launch residents, real day/night, four seasons, weather, lighthouse, mailbox, fountain plaza, beach, shops.
 
-- It doesn't run out of things to do — there are systems you keep coming back to (seasons, NPC drama, babies maturing, letter arcs)
-- Hunger/thirst keeps you actually inhabiting the world
-- NPC romances happen WITHOUT you driving them — the cove feels alive even when you idle
-- You can date and marry residents yourself
-- All survival-life-sim staples (sleep, eat, drink, gather, craft, build relationships) wrapped in a chibi shell
+**Survival** — Hunger / Thirst / Energy / Social meters. Eat at bakery, drink at fountain, sleep at lighthouse, talk for social.
 
-## Steam release plan
+**Audio** — procedural ocean ambient, gentle generative season music, chibi voice gibberish per character. Web Audio, no files needed. Volume sliders in the pause menu.
 
-Once the game feels good, wrap it in **Electron** (same setup as Cookup). That gives you:
-- A real Windows .exe and macOS .app and Linux build
-- Can publish to Steam — Electron games on Steam are common (Slay the Spire's UI layer, Cult of the Lamb tools, lots of indies)
-- Steamworks integration via `steamworks.js` — achievements, cloud saves, rich presence
-- Trading cards
-- Steam Workshop (later, for community letter packs)
+**Letters + Arcs** — every morning 3-7 letters land in your mailbox. Reply warm/sassy/formal/ignore. Five multi-day story arcs (Compost War, Quill's Book, The Twin Code, Rosa's Reunion, Lost Cove Letter) unfold over weeks.
 
-See `STEAM_PLAN.md` for the full release checklist.
+**Tomodachi-style relationship phases** — 11 stages: Stranger → Just met → Acquaintance → Friend → Good friend → Best friend → Crush → Sweetheart → Dating → Engaged → Married. Both affinity AND time-since-met required for each phase. "Thaw" period after meeting.
+
+**NPC romance** — they date, marry, kiss visibly, and ask to have babies. Babies are spawned as real new residents and **age over time** (baby → kid → teen → adult).
+
+**Auto move-in** — when two residents marry, one moves into the other's home.
+
+**Drag-to-meet** — click-and-hold any chibi (or right-click), drag onto another, drop. 50/50 they hit it off. Bad first impression forces a longer thaw period.
+
+**Pairing Shop** — pay 50 coins to introduce two residents (Tomodachi-style). Big affinity boost, they walk to meet.
+
+**Roles** — President, Vice President, Shopkeeper, Worker, Citizen.
+
+**President requests** — periodic modal: "trees along the south path." Approve and the world updates.
+
+**Festivals** — one per season on day 3: Bloom Festival, Fishing Tournament, Leaf-Rake Contest, Gift Exchange.
+
+**Happiness + Leave-Island** — every resident has a hidden happiness meter. If they get disrespected too often (low affinity + low happiness), they have a 5% daily chance of asking to leave. You can beg them to stay.
+
+**Dreams** — every night a few residents dream. Dream Journal panel shows what they dreamed. Dreams nudge their morning mood.
+
+**Mini-games** — Rock-Paper-Scissors, Fishing (timing-based), Dance-off (memory game).
+
+**Face Paint** — apply patterns to any chibi (your character or any resident): whiskers, star, heart, tribal, glitter, cat mask, butterfly, sun.
+
+**Gifts** — press G near a resident to give them an item from your pouch. Big affinity bump if they love it (each resident has favorite items).
+
+**World Editor** — press B to enter edit mode. Place trees, flowers, houses, new residents. Drag-and-drop layout. Pink dashed line shows playable area.
+
+**No character cap, expanding barrier** — every 10 residents the playable area grows.
+
+**Story Mode** — separate button on title screen. 5 chapters that run alongside sandbox.
+
+**Crafting** — beach combing → cookbook recipes → gifts.
+
+**UI** — pastel paper aesthetic, HUD with clock + meters + coin, side panel for all menus.
+
+**Save / Load** — localStorage, ready to mirror to Steam Cloud when wrapped in Electron.
+
+**Phone testing** — `Test on Phone.bat` runs a server on port 8080 and shows your local IP. Open the URL on your phone.
+
+**Steam-ready Electron build** — `Build Desktop.bat` packages a Windows installer via Electron + electron-builder.
+
+## How to publish updates
+
+After making code changes, double-click **Publish to Web.bat**. It commits, pushes, and updates GitHub Pages. URL: https://wackytownkids-commits.github.io/Pebble-Cove/
 
 ## File map
 
@@ -57,33 +82,40 @@ See `STEAM_PLAN.md` for the full release checklist.
 PebbleCove/
 ├── index.html
 ├── style.css
+├── package.json           ← Electron config
+├── electron-main.js       ← Electron entry
 ├── Play Pebble Cove.bat
+├── Test on Phone.bat
+├── Publish to Web.bat
+├── Build Desktop.bat
 ├── js/
-│   ├── game.js          ← main loop + state
-│   ├── world.js         ← terrain, buildings
-│   ├── sprites.js       ← chibi character renderer
-│   ├── residents.js     ← 12 villagers + AI
-│   ├── relationships.js ← friendship / dating / marriage / babies
-│   ├── needs.js         ← hunger / thirst / energy / social
-│   ├── letters.js       ← daily mail
-│   ├── ui.js            ← all panels + dialogue
-│   ├── save.js          ← localStorage save
-│   └── input.js         ← keyboard + mouse
-├── README.md
-└── STEAM_PLAN.md
+│   ├── audio.js           ← procedural Web Audio
+│   ├── sprites.js         ← chibi renderer
+│   ├── needs.js           ← hunger/thirst/energy/social
+│   ├── phases.js          ← Tomodachi-style relationships
+│   ├── relationships.js   ← affinity matrix
+│   ├── letters.js         ← daily mail
+│   ├── arcs.js            ← multi-day story arcs
+│   ├── festivals.js       ← seasonal events
+│   ├── residents.js       ← 12 villagers
+│   ├── roles.js           ← role system
+│   ├── spawn.js           ← runtime resident creation
+│   ├── world.js           ← terrain + buildings
+│   ├── ui.js              ← all panels
+│   ├── editor.js          ← world editor
+│   ├── story.js           ← story mode
+│   ├── president.js       ← President requests
+│   ├── happiness.js       ← happiness + leave-island
+│   ├── pairing.js         ← Tomodachi pairing shop
+│   ├── dreams.js          ← night dreams
+│   ├── facepaint.js       ← face paint
+│   ├── minigames.js       ← RPS / fishing / dance
+│   ├── marriage.js        ← auto move-in
+│   ├── babyaging.js       ← child → kid → teen → adult
+│   ├── gifts.js           ← gift system
+│   ├── save.js            ← localStorage
+│   ├── input.js           ← keyboard + mouse
+│   ├── touch.js           ← phone joystick + drag
+│   └── game.js            ← main loop
+└── README.md
 ```
-
-## What's NOT in v0.1 (next session)
-
-- Music + sound effects (gibberish TTS voices, ambient ocean, soft strings)
-- Festivals (summer fishing tournament, autumn leaf-rake, winter gift exchange)
-- House decorating (place furniture in the lighthouse)
-- More letters (currently 12 templates — need ~100 for launch)
-- More crafting recipes
-- Babies aging into kid → teen → adult residents (currently they're listed but don't fully spawn as chibis yet)
-- Steam wrapper (Electron + steamworks.js)
-- Settings menu (currently a stub)
-- Screen-shake / juice polish
-- The deeper letter arcs (compost war, Quill's book, twin code, etc.)
-
-Tell me which of those to do next.
